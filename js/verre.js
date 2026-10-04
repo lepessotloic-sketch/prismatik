@@ -44,9 +44,16 @@ export async function creerVerre({ section, canvas, carte, marbre }) {
   camera.add(lueurOr, lueurVert);
 
   // La dalle de verre (même matériau que Signature 3D, version fumée et dépolie).
-  const verre = new THREE.MeshPhysicalMaterial({ color:'#a7c9b4', metalness:0, roughness:0.34, transmission:1, thickness:0.35, ior:1.46,
-    attenuationColor:new THREE.Color('#10241a'), attenuationDistance:1.8, clearcoat:1, clearcoatRoughness:0.14,
-    iridescence:0.12, sheen:0.4, sheenColor:new THREE.Color('#e7cc86'), iridescenceIOR:1.3, iridescenceThicknessRange:[100, 420], envMapIntensity:0.55, side:THREE.FrontSide });
+  // Teintes possibles du verre (?verre=a|b|c pour comparer) ; « a » = celle du modèle premium-3d-glass d'origine.
+  const TEINTES = {
+    a:{ color:'#9ea6b8', attenuationColor:'#10241a', attenuationDistance:1.8, roughness:0.34, iridescence:0.18 },
+    b:{ color:'#cfe9db', attenuationColor:'#0f3a27', attenuationDistance:2.4, roughness:0.30, iridescence:0.10 },
+    c:{ color:'#ffffff', attenuationColor:'#202020', attenuationDistance:4.0, roughness:0.22, iridescence:0.28 }
+  };
+  const T = TEINTES[new URLSearchParams(location.search).get('verre')] || TEINTES.a;
+  const verre = new THREE.MeshPhysicalMaterial({ color:T.color, metalness:0, roughness:T.roughness, transmission:1, thickness:0.35, ior:1.46,
+    attenuationColor:new THREE.Color(T.attenuationColor), attenuationDistance:T.attenuationDistance, clearcoat:1, clearcoatRoughness:0.14,
+    iridescence:T.iridescence, iridescenceIOR:1.3, iridescenceThicknessRange:[100, 420], envMapIntensity:0.55, side:THREE.FrontSide });
   verre.onBeforeCompile = shader => {
     shader.uniforms.uChromaticSpread = { value:0.018 };
     shader.fragmentShader = 'uniform float uChromaticSpread;\n' + shader.fragmentShader;

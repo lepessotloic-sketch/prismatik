@@ -486,11 +486,18 @@ try {
     r.onload = async () => {
       try {
         document.getElementById('demoImage').src = r.result;
-        await demo.changer(r.result, { zone:[0, 0, 1, 1] }); demo.pause(false);   // logo inconnu : tout le logo éclate
+        const info = await demo.changer(r.result, { zone:[0, 0, 1, 1] }); demo.pause(false);   // logo inconnu : tout le logo éclate
+        // Le cadre prend le fond qui fait ressortir le logo (un logo noir sur le fond noir du cadre disparaîtrait).
+        const cadre = document.querySelector('.cadre');
+        const clair = info.fond ? (0.2126 * info.fond[0] + 0.7152 * info.fond[1] + 0.0722 * info.fond[2]) / 255 > 0.5 : !(info.lumLogo > 0.42 && info.partSombre < 0.12);
+        cadre.style.background = info.fond ? 'rgb(' + info.fond.join(',') + ')' : (clair ? '#f6f7f4' : '');
+        document.getElementById('demoLegende').style.color = clair ? 'rgba(22,32,26,.6)' : '';
         document.getElementById('demoLegende').textContent = 'Votre logo';
         window.__prismatik.logo = await logoLeger(r.result);
         document.getElementById('jaime').hidden = false;
-        etat.textContent = 'Voilà votre logo vivant. Touchez-le pour le revoir.';
+        etat.textContent = info.fondCharge
+          ? 'Votre image a un fond chargé (photo ou capture d’écran) : le découpage ne peut pas être net. Pour un vrai résultat, prenez votre logo sur un fond uni ou transparent, ou envoyez-le-nous : on s’en occupe.'
+          : 'Voilà votre logo vivant. Touchez-le pour le revoir.';
       } catch (x) { etat.textContent = 'Nous n’avons pas réussi à lire ce logo. Essayez une image sur fond uni ou transparent.'; }
     };
     r.readAsDataURL(f);

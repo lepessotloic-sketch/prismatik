@@ -69,6 +69,19 @@ export function analyse(img, options = {}) {
     return o;
   };
   m = passe(passe(m, 1, true), 1, false);
+  // Logo sur fond plein (blanc, couleur) : on rogne 1 pixel de bord, sinon un liseré de fond reste collé aux lettres.
+  if (fond) {
+    // … mais seulement les pixels de bord dont la couleur tire vers le fond (les traits fins restent entiers).
+    const m2 = m.slice();
+    for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+      const i = y * W + x; if (!m[i]) continue;
+      if (m[i - 1] && m[i + 1] && m[i - W] && m[i + W]) continue;
+      const j = i * 4;
+      if (Math.hypot(px[j] - fond[0], px[j + 1] - fond[1], px[j + 2] - fond[2]) < seuil * 2.2) m2[i] = 0;
+    }
+    m = m2;
+  }
+  let couverture = 0; for (let i = 0; i < W * H; i++) couverture += m[i]; couverture /= W * H;
   const etiquette = (test) => {
     const lab = new Int32Array(W * H).fill(-1); const zones = []; const pile = [];
     for (let i0 = 0; i0 < W * H; i0++) {
@@ -179,7 +192,9 @@ export function analyse(img, options = {}) {
     lum += (0.2126 * z.r + 0.7152 * z.g + 0.0722 * z.b); nLum += z.n;
   }
   return { W, H, fond, transparent, morceaux, boite:[x0, y0, x1, y1],
-    lumLogo: nLum ? lum / nLum / 255 : 0.5, partSombre: nPlein ? nSombre / nPlein : 0 };
+    lumLogo: nLum ? lum / nLum / 255 : 0.5, partSombre: nPlein ? nSombre / nPlein : 0,
+    // Fond chargé (photo, capture d'écran) : le fond varie beaucoup ou le « dessin » couvre presque toute l'image.
+    fondCharge: !!fond && (seuil >= 85 || couverture > 0.55) };
 }
 
 export function contours(test, x0, y0, x1, y1) {

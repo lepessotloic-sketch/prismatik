@@ -1,7 +1,7 @@
 // Ouverture de la vitrine Prismatik : l'IM d'Impact-NVA arrive en éclats, la lumière passe,
 // puis le M éclate et disparaît : ses éclats révèlent N, V, A (lettres romaines, dans le vert du M).
 // Résultat : I · N V A sur une ligne.
-import { chargeTrois, chargeImage, analyse, creerStudio, fabriquerPieces, prepareEclats, poseEclat, clamp, sortie } from './logo-vivant.js';
+import { chargeTrois, chargeImage, analyse, creerStudio, fabriquerPieces, prepareEclats, poseEclat, clamp, sortie } from './logo-vivant.js?v=2';
 
 let THREE = null;
 const reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;

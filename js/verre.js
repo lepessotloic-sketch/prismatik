@@ -1,7 +1,7 @@
 // Formulaire en verre : une vraie dalle de verre 3D (réfraction, biseau, irisation) épinglée
 // derrière la carte du formulaire, comme sur Signature 3D. Derrière le verre : le marbre et
 // deux lueurs, or et vert. Sans WebGL, la carte garde un verre en CSS.
-import { chargeTrois } from './logo-vivant.js';
+import { chargeTrois } from './logo-vivant.js?v=2';
 
 const RIM_PX = 16, RAYON_PX = 30, EPAISSEUR = 0.08, RIM_EP = 0.06, DIST = 6;
 

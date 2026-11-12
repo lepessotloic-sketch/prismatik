@@ -367,6 +367,11 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
           </div>
           <label for="msg">Votre projet en quelques mots<textarea id="msg" name="msg" placeholder="Votre logo, votre site actuel, ce que vous aimeriez…"></textarea></label>
           <p id="formErreur" role="alert"></p>
+          <!-- CLE DE SITE Turnstile : PUBLIQUE par nature, elle doit etre lisible ici.
+               Meme widget que impact-nva.fr. Le domaine prismatik.impact-nva.fr doit
+               figurer dans les noms d'hotes du widget, sinon erreur 110200 et jeton vide.
+               La cle SECRETE ne vit que dans le credential n8n. -->
+          <div class="cf-turnstile" id="verif" data-sitekey="0x4AAAAAAF8Fa2WBlUY8qKIa" data-theme="dark" data-refresh-expired="auto" data-refresh-timeout="auto"></div>
           <div class="carte-pied"><p class="petit">Vos informations restent confidentielles.<br>Aucun engagement.</p>
           <button class="pilule" type="submit">Recevoir ma proposition <span aria-hidden="true">↗</span></button></div>
         </form>
@@ -386,7 +391,45 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
   <span>© 2026 Impact-NVA — Tous droits réservés.</span>
 </footer>
 
+<!-- Turnstile : verification anti-robot. Le script doit venir de cette URL exacte (doc Cloudflare). -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 <script>
+/* Le jeton anti-robot, au moment de l'envoi et pas avant.
+   Un jeton Turnstile ne vaut que 300 secondes. Celui qui serait fabrique a
+   l'ouverture de la page serait perime chez quelqu'un qui prend son temps, et
+   n8n le classerait robot : aucun accuse. C'est arrive sur impact-nva.fr le
+   11/11/2026.
+   Si rien ne vient en six secondes, on envoie SANS jeton et c'est n8n qui
+   tranche. La page ne bloque jamais personne. */
+function lireJeton() {
+  try {
+    if (window.turnstile && typeof window.turnstile.getResponse === 'function') {
+      const t = window.turnstile.getResponse('#verif');
+      if (t) { return t; }
+    }
+  } catch (e) { /* widget absent, pas encore rendu, ou en erreur */ }
+  const champCache = document.querySelector('[name=cf-turnstile-response]');
+  return champCache ? champCache.value : '';
+}
+
+function jetonFrais() {
+  return new Promise(resoudre => {
+    const dejaLa = lireJeton();
+    if (dejaLa) { resoudre(dejaLa); return; }
+    try {
+      if (!window.turnstile || typeof window.turnstile.reset !== 'function') { resoudre(''); return; }
+      window.turnstile.reset('#verif');
+    } catch (e) { resoudre(''); return; }
+    const debut = Date.now();
+    const guet = setInterval(() => {
+      const t = lireJeton();
+      if (t) { clearInterval(guet); resoudre(t); }
+      else if (Date.now() - debut > 6000) { clearInterval(guet); resoudre(''); }
+    }, 250);
+  });
+}
+
 document.getElementById('logoRetirer').addEventListener('click', () => { document.getElementById('logoJoint').hidden = true; });
 // Questions : ouvrir / fermer
 document.querySelectorAll('.qa button').forEach(b => b.addEventListener('click', () => {
@@ -405,6 +448,7 @@ document.getElementById('formContact').addEventListener('submit', async e => {
   const data = { nom:v('nom'), tel:v('tel'), email:v('email'), metier:v('metier'), offre:v('offreChoisie'), msg:v('msg'), origine:'site-prismatik' };
   if (!document.getElementById('logoJoint').hidden && window.__prismatik && window.__prismatik.logo) data.logo = window.__prismatik.logo;
   const old = btn.innerHTML; btn.disabled = true; btn.innerHTML = 'Envoi en cours…';
+  data.verif = await jetonFrais();
   try {
     const r = await fetch('https://n8n.srv1677224.hstgr.cloud/webhook/impact-nva-lead', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify(data) });
     if (!r.ok) throw new Error('http ' + r.status);

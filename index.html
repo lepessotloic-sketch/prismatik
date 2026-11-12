@@ -360,6 +360,13 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
               <option>Je ne sais pas encore — conseillez-moi</option></select></label>
           </div>
           <div class="piege" aria-hidden="true"><label for="societe">Ne remplissez pas ce champ<input id="societe" tabindex="-1" autocomplete="off"></label></div>
+          <!-- Joindre son logo depuis le formulaire lui-meme. Avant le 12/11/2026 le seul
+               champ de fichier de la page etait celui de la demonstration 3D, cent lignes
+               plus haut : un prospect qui remplissait le formulaire ne pouvait pas joindre
+               son logo, et la page lui promet pourtant que son logo prend vie. -->
+          <label for="logoFichier">Votre logo, sur fond transparent<input id="logoFichier" type="file" accept="image/*"></label>
+          <p class="petit" id="logoAide">Un PNG sur fond transparent si vous l'avez. Sinon laissez vide&nbsp;: on s'en occupe.</p>
+          <label for="logoLien">Ou un lien vers votre logo<input id="logoLien" name="logoLien" autocomplete="url" placeholder="Votre site, votre page Facebook ou Instagram"></label>
           <div class="logo-joint" id="logoJoint" hidden>
             <img id="logoJointImg" alt="Votre logo">
             <span>Votre logo est joint à votre demande.</span>
@@ -430,7 +437,15 @@ function jetonFrais() {
   });
 }
 
-document.getElementById('logoRetirer').addEventListener('click', () => { document.getElementById('logoJoint').hidden = true; });
+document.getElementById('logoRetirer').addEventListener('click', () => {
+  document.getElementById('logoJoint').hidden = true;
+  /* On vide aussi le champ de fichier : sans ca, rechoisir le meme fichier ne
+     declenche aucun evenement et le visiteur croit que rien ne se passe. */
+  const fichier = document.getElementById('logoFichier');
+  if (fichier) { fichier.value = ''; }
+  const aide = document.getElementById('logoAide');
+  if (aide) { aide.textContent = 'Un PNG sur fond transparent si vous l’avez. Sinon laissez vide : on s’en occupe.'; }
+});
 // Questions : ouvrir / fermer
 document.querySelectorAll('.qa button').forEach(b => b.addEventListener('click', () => {
   const qa = b.parentElement, ouvert = qa.classList.toggle('ouvert'); b.setAttribute('aria-expanded', ouvert);
@@ -445,7 +460,14 @@ document.getElementById('formContact').addEventListener('submit', async e => {
   const ok = document.getElementById('formOk');
   const prenom = v('nom').split(' ').slice(-1)[0];
   if (v('societe') !== '') { f.style.display = 'none'; ok.textContent = 'Merci ! Votre demande est bien reçue.'; ok.classList.add('vu'); return; }
-  const data = { nom:v('nom'), tel:v('tel'), email:v('email'), metier:v('metier'), offre:v('offreChoisie'), msg:v('msg'), origine:'site-prismatik' };
+  /* Le lien vers le logo part dans le message, comme sur impact-nva.fr : beaucoup
+     d'artisans n'ont pas leur logo sous la main mais savent coller l'adresse de leur
+     page Facebook. Retour a la ligne ecrit String.fromCharCode(10) : aucune barre
+     oblique inverse dans ce fichier, elles se perdent en chemin. */
+  const nl = String.fromCharCode(10);
+  const vFacultatif = id => { const e = document.getElementById(id); return e ? e.value.trim() : ''; };
+  const lienLogo = vFacultatif('logoLien');
+  const data = { nom:v('nom'), tel:v('tel'), email:v('email'), metier:v('metier'), offre:v('offreChoisie'), msg:(lienLogo ? 'Logo : ' + lienLogo + nl : '') + v('msg'), origine:'site-prismatik' };
   if (!document.getElementById('logoJoint').hidden && window.__prismatik && window.__prismatik.logo) data.logo = window.__prismatik.logo;
   const old = btn.innerHTML; btn.disabled = true; btn.innerHTML = 'Envoi en cours…';
   data.verif = await jetonFrais();
@@ -467,6 +489,54 @@ import { creerLogoVivant } from './js/logo-vivant.js?v=2';
 import { creerOuverture } from './js/ouverture.js?v=2';
 import { creerVerre } from './js/verre.js?v=2';
 window.__prismatik = {};
+
+// Réduit le logo (700 px max) pour un envoi léger ; PNG si transparent et pas trop lourd, sinon JPEG.
+async function logoLeger(src) {
+  const im = new Image(); im.src = src; await im.decode();
+  const k = Math.min(1, 700 / Math.max(im.naturalWidth, im.naturalHeight));
+  const c = document.createElement('canvas'); c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
+  c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+  let url = c.toDataURL('image/png');
+  if (url.length > 900000) { const j = document.createElement('canvas'); j.width = c.width; j.height = c.height; const x = j.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, j.width, j.height); x.drawImage(c, 0, 0); url = j.toDataURL('image/jpeg', 0.85); }
+  return url;
+}
+
+// Le logo joint depuis le formulaire. BRANCHE ICI, AVANT la 3D, et pas plus bas :
+// ce module contient des await au premier niveau (creerLogoVivant). Si la 3D ne
+// repond jamais — pas de WebGL, image qui ne charge pas — le module s arrete la
+// EN SILENCE et tout ce qui suit n est jamais branche. Un prospect sur un vieux
+// telephone verrait alors un champ logo qui ne fait rien.
+// logoLeger est une declaration de fonction : elle est hissee, donc utilisable
+// ici bien qu ecrite plus bas. Elle reduit a 700 px et sort du PNG ou du JPEG,
+// les deux seuls formats que le pilote 23 accepte, sous 2,8 Mo.
+  document.getElementById('logoFichier').addEventListener('change', e => {
+    const f = e.target.files[0];
+    const aide = document.getElementById('logoAide');
+    if (!f) return;
+    if (!f.type.startsWith('image/')) {
+      aide.textContent = 'Ce fichier n’est pas une image. Choisissez l’image de votre logo.';
+      e.target.value = '';
+      return;
+    }
+    aide.textContent = 'Préparation de votre logo…';
+    const r = new FileReader();
+    r.onload = async () => {
+      try {
+        window.__prismatik.logo = await logoLeger(r.result);
+        document.getElementById('logoJointImg').src = window.__prismatik.logo;
+        document.getElementById('logoJoint').hidden = false;
+        aide.textContent = 'Votre logo part avec votre demande.';
+      } catch (x) {
+        aide.textContent = 'Nous n’avons pas réussi à lire ce logo. Essayez une autre image, ou collez un lien ci-dessous.';
+        e.target.value = '';
+      }
+    };
+    r.onerror = () => {
+      aide.textContent = 'Nous n’avons pas réussi à lire ce fichier. Essayez une autre image, ou collez un lien ci-dessous.';
+      e.target.value = '';
+    };
+    r.readAsDataURL(f);
+  });
 
 // 1. Ouverture : l'IM arrive en éclats, puis le M éclate et donne N, V, A.
 try {
@@ -505,22 +575,13 @@ try {
   ['dragleave', 'drop'].forEach(n => cadreDemo.addEventListener(n, () => cadreDemo.classList.remove('survol')));
   cadreDemo.addEventListener('drop', e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) essaie(f); });
   document.getElementById('votreLogo').addEventListener('change', e => { const f = e.target.files[0]; if (f) essaie(f); });
-  // Réduit le logo (700 px max) pour un envoi léger ; PNG si transparent et pas trop lourd, sinon JPEG.
-  async function logoLeger(src) {
-    const im = new Image(); im.src = src; await im.decode();
-    const k = Math.min(1, 700 / Math.max(im.naturalWidth, im.naturalHeight));
-    const c = document.createElement('canvas'); c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
-    c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
-    let url = c.toDataURL('image/png');
-    if (url.length > 900000) { const j = document.createElement('canvas'); j.width = c.width; j.height = c.height; const x = j.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, j.width, j.height); x.drawImage(c, 0, 0); url = j.toDataURL('image/jpeg', 0.85); }
-    return url;
-  }
   document.getElementById('jaime').addEventListener('click', () => {
     if (!window.__prismatik.logo) return;
     document.getElementById('logoJointImg').src = window.__prismatik.logo;
     document.getElementById('logoJoint').hidden = false;
     document.getElementById('offreChoisie').selectedIndex = 0;
   });
+
   function essaie(f) {
     if (!demo.changer) return;
     if (!f.type.startsWith('image/')) { document.getElementById('etatEssai').textContent = 'Ce fichier n’est pas une image. Choisissez l’image de votre logo.'; return; }

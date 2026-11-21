@@ -206,6 +206,20 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
   .entete .marque span{display:none}
 }
 @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} .btn{transition:none} }
+/* Bande partenaires et mentions (21/11/2026) */
+.partners{margin-top:28px;padding-top:22px;border-top:1px solid var(--trait);text-align:center}
+.partners-label{color:var(--doux);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 18px}
+.partners-logos{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:18px 44px;list-style:none;margin:0;padding:0}
+.partner{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.88}
+.partner:first-child{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:4px 8px}
+.partner:first-child .partner-role{flex-basis:100%}
+.partner-github{width:30px;height:30px;color:#f4ecd8}
+.partner-name{font:600 20px/1 var(--romain);color:#f4ecd8}
+.partner-img{height:26px;width:auto;object-fit:contain}
+.partner-stripe{height:34px}
+.partner-role{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--doux)}
+.partners-domaine{margin:18px 0 0;color:var(--doux);font-size:14px}
+.pied-legal a{color:inherit;text-decoration:underline}
 </style>
 </head>
 <body>
@@ -312,6 +326,7 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
           <p>Aucun abonnement Impact-NVA. Seul le nom de domaine se renouvelle chaque année, à votre nom.</p>
           <p>Après les 12 mois de suivi : 50 € la modification simple, publiée sous 48 h ouvrées. Sans abonnement, vous payez seulement quand vous en avez besoin.</p>
           <p>Votre projet est plus simple ? <a href="https://impact-nva.fr/#offres">Voir les offres Essentiel et Prestige</a>.</p>
+          <div class="partners"><p class="partners-label">Votre site repose sur des services reconnus et fiables</p><ul class="partners-logos"><li class="partner"><svg class="partner-github" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg><span class="partner-name">GitHub</span><span class="partner-role">Hébergement</span></li><li class="partner"><img class="partner-img" src="img/logo-ovh.png" alt="OVHcloud" width="960" height="152" loading="lazy"><span class="partner-role">Nom de domaine</span></li><li class="partner"><img class="partner-img partner-stripe" src="img/logo-stripe.png" alt="Stripe" width="960" height="400" loading="lazy"><span class="partner-role">Paiement sécurisé</span></li></ul><p class="partners-domaine">Nom de domaine à acheter chez OVHcloud, à votre nom&nbsp;: 10 à 15&nbsp;€ par an. Hébergement offert, aucun abonnement.</p></div>
         </div>
       </div>
     </div>
@@ -395,7 +410,7 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
   </a>
   <span>Le digital qui donne vie à votre savoir-faire.</span>
   <span>contact@impact-nva.fr · France · à distance</span>
-  <span>© 2026 Impact-NVA — Tous droits réservés.</span>
+  <span class="pied-legal">© 2026 Impact-NVA · Entrepreneur individuel (micro-entrepreneur, BIC) · SIRET 130&nbsp;110&nbsp;000&nbsp;00010 · TVA non applicable, article 293&nbsp;B du Code général des impôts · <a href="https://impact-nva.fr/mentions-legales.html">Mentions légales</a></span>
 </footer>
 
 <!-- Turnstile : verification anti-robot. Le script doit venir de cette URL exacte (doc Cloudflare). -->

@@ -206,6 +206,20 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
   .entete .marque span{display:none}
 }
 @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} .btn{transition:none} }
+/* Bande partenaires et mentions (21/11/2026) */
+.partners{margin-top:28px;padding-top:22px;border-top:1px solid var(--trait);text-align:center}
+.partners-label{color:var(--doux);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 18px}
+.partners-logos{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:18px 44px;list-style:none;margin:0;padding:0}
+.partner{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.88}
+.partner:first-child{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:4px 8px}
+.partner:first-child .partner-role{flex-basis:100%}
+.partner-github{width:30px;height:30px;color:#f4ecd8}
+.partner-name{font:600 20px/1 var(--romain);color:#f4ecd8}
+.partner-img{height:26px;width:auto;object-fit:contain}
+.partner-stripe{height:34px}
+.partner-role{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--doux)}
+.partners-domaine{margin:18px 0 0;color:var(--doux);font-size:14px}
+.pied-legal a{color:inherit;text-decoration:underline}
 </style>
 </head>
 <body>
@@ -225,7 +239,7 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
       <p class="inscription" aria-label="I M N V A">I<b>·</b>M<b>·</b>N<b>·</b>V<b>·</b>A</p>
       <p class="sur">Prismatik · la Signature en 3D</p>
       <h1>Votre logo <em>prend vie</em>.</h1>
-      <p>Quand un client ouvre votre site, la première chose qu’il voit, c’est votre logo qui prend vie. Il se souvient de vous, pas de votre concurrent.</p>
+      <p>Votre logo ne se contente plus d’être vu. Il prend vie. Quand un client ouvre votre site, la première chose qu’il voit, c’est votre marque qui se construit sous ses yeux.</p>
       <div class="actions">
         <a class="btn" href="#contact">Je veux Prismatik →</a>
         <a class="btn vide" href="#demo">Voir sur un logo de paysagiste</a>
@@ -271,8 +285,8 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
       </div>
       <p class="petit garde-fou">Sur un téléphone trop ancien pour la 3D, votre logo s’affiche simplement en image : jamais d’écran vide.</p>
       <div class="rapporte">
-        <p>Un site ne coûte pas. <em>Il vous rapporte.</em></p>
-        <small>Vos clients cherchent sur Google et Google Maps avant d’appeler. Une vraie vitrine vous rend visible, et transforme cette visibilité en devis.</small>
+        <p>Un logo figé se regarde. <em>Un logo vivant se retient.</em></p>
+        <small>Votre identité visuelle animée vous sert partout&nbsp;: à l’ouverture de votre site et dans votre communication sur les réseaux.</small>
       </div>
     </div>
   </section>
@@ -289,18 +303,18 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
         <div class="prix">
           <div class="ligne"><b>Signature</b><span>1 290 €</span></div>
           <ul class="liste">
-            <li>Tout le Prestige</li>
-            <li>Design sur-mesure</li>
-            <li>Textes rédigés pour vous</li>
-            <li>Page « Où j’interviens » avec vos communes</li>
+            <li>Tout ce que le Prestige apporte à votre projet</li>
+            <li>Création entièrement sur mesure, direction artistique exclusive</li>
+            <li>Textes personnalisés, animations et navigation travaillées</li>
+            <li>Page de vos communes d’intervention</li>
             <li>Suivi 12 mois inclus</li>
-            <li>Tous les fichiers du site vous sont remis</li>
+            <li>Dossier complet du site remis après paiement et livraison</li>
           </ul>
           <div class="ligne option"><b>+ Option Prismatik</b><span>290 €</span></div>
           <ul class="liste option">
-            <li>Votre logo en 3D, avec ses vraies couleurs, qui arrive en éclats à l’ouverture de votre site</li>
+            <li>Une animation 3D personnalisée de votre logo, dans le respect de votre identité et de vos couleurs, intégrée à l’ouverture de votre site Signature</li>
             <li>Le mot fort de votre nom éclate et se recompose : votre signature visuelle</li>
-            <li>Vos vidéos prêtes à publier : format story (Facebook, Instagram, statut WhatsApp) et format carré pour vos publications</li>
+            <li>Vos vidéos pour les réseaux sociaux, selon les formats actuels : story (Facebook, Instagram, statut WhatsApp) et carré pour vos publications</li>
             <li>Les fichiers vidéo sont à vous, pour toujours</li>
           </ul>
           <div class="total"><b>Total</b><div><span>1 580 €</span><small>paiement unique · 0 € d’abonnement</small></div></div>
@@ -312,6 +326,7 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
           <p>Aucun abonnement Impact-NVA. Seul le nom de domaine se renouvelle chaque année, à votre nom.</p>
           <p>Après les 12 mois de suivi : 50 € la modification simple, publiée sous 48 h ouvrées. Sans abonnement, vous payez seulement quand vous en avez besoin.</p>
           <p>Votre projet est plus simple ? <a href="https://impact-nva.fr/#offres">Voir les offres Essentiel et Prestige</a>.</p>
+          <div class="partners"><p class="partners-label">Votre site repose sur des services reconnus et fiables</p><ul class="partners-logos"><li class="partner"><svg class="partner-github" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg><span class="partner-name">GitHub</span><span class="partner-role">Hébergement</span></li><li class="partner"><img class="partner-img" src="img/logo-ovh.png" alt="OVHcloud" width="960" height="152" loading="lazy"><span class="partner-role">Nom de domaine</span></li><li class="partner"><img class="partner-img partner-stripe" src="img/logo-stripe.png" alt="Stripe" width="960" height="400" loading="lazy"><span class="partner-role">Paiement sécurisé</span></li></ul><p class="partners-domaine">Nom de domaine à acheter chez OVHcloud, à votre nom&nbsp;: 10 à 15&nbsp;€ par an. Hébergement offert, aucun abonnement.</p></div>
         </div>
       </div>
     </div>
@@ -324,9 +339,9 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
       <div class="qa"><button type="button" aria-expanded="false">Est-ce que je peux voir le résultat avec mon logo avant de décider ?</button>
         <div class="rep">Oui. Essayez-le vous-même juste au-dessus avec « Essayer avec votre logo », ou envoyez-nous votre logo : nous vous montrons ce que ça donne.</div></div>
       <div class="qa"><button type="button" aria-expanded="false">Je n’y connais rien en informatique, est-ce un problème ?</button>
-        <div class="rep">Absolument pas, c’est même notre spécialité. Vous nous parlez de votre métier, on s’occupe de toute la technique. Aucun mot compliqué : on vous explique tout simplement, à chaque étape.</div></div>
+        <div class="rep">Absolument pas. Vous nous parlez de votre métier, on s’occupe de tout le reste. Aucun mot compliqué : on vous explique tout simplement, à chaque étape.</div></div>
       <div class="qa"><button type="button" aria-expanded="false">Combien de temps pour avoir mon site ?</button>
-        <div class="rep">Une vitrine Signature sur-mesure demande quelques jours. On avance vite, sans jamais bâcler.</div></div>
+        <div class="rep">Une Signature est entièrement sur mesure&nbsp;: elle est livrée généralement en 48 à 96&nbsp;h selon sa complexité. Nous rédigeons vos textes, et vous découvrez votre site avant de l’acheter.</div></div>
       <div class="qa"><button type="button" aria-expanded="false">Et si je veux modifier mon site plus tard ?</button>
         <div class="rep">Avec la Signature, le suivi est inclus pendant 12 mois. Ensuite, une modification simple coûte 50 €, publiée sous 48 h ouvrées : changer un texte, remplacer ou ajouter des photos sur une page existante, mettre à jour vos coordonnées, horaires ou services. Une nouvelle page, une nouvelle section, une refonte ou une nouvelle fonctionnalité fait l’objet d’un devis. Aucun abonnement.</div></div>
     </div>
@@ -395,7 +410,7 @@ footer b{color:var(--blanc);letter-spacing:.18em;font-weight:500}
   </a>
   <span>Le digital qui donne vie à votre savoir-faire.</span>
   <span>contact@impact-nva.fr · France · à distance</span>
-  <span>© 2026 Impact-NVA — Tous droits réservés.</span>
+  <span class="pied-legal">© 2026 Impact-NVA · <a href="https://impact-nva.fr/mentions-legales.html">Mentions légales</a></span>
 </footer>
 
 <!-- Turnstile : verification anti-robot. Le script doit venir de cette URL exacte (doc Cloudflare). -->
